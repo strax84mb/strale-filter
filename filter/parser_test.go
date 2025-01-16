@@ -6,7 +6,7 @@ func makeParser() *filter.Parser {
 	return &filter.Parser{
 		UnaryOperators: map[string]filter.OperatorsDefinition{
 			"not": {
-				Placements: []filter.OperatorPlacement{filter.OnCondition},
+				Placements: []filter.OperatorPlacement{filter.OnCondition, filter.OnUnaryOperator},
 			},
 			"exists": {
 				Placements: []filter.OperatorPlacement{filter.OnField},
@@ -22,12 +22,12 @@ func makeParser() *filter.Parser {
 				AllowedOperands: []filter.NodeType{filter.ArrayType},
 			},
 			"and": {
-				Placements:      []filter.OperatorPlacement{filter.OnCondition},
-				AllowedOperands: []filter.NodeType{filter.ConditionType},
+				Placements:      []filter.OperatorPlacement{filter.OnCondition, filter.OnUnaryOperator},
+				AllowedOperands: []filter.NodeType{filter.ConditionType, filter.UnaryOperatorType},
 			},
 			"or": {
-				Placements:      []filter.OperatorPlacement{filter.OnCondition},
-				AllowedOperands: []filter.NodeType{filter.ConditionType},
+				Placements:      []filter.OperatorPlacement{filter.OnCondition, filter.OnUnaryOperator},
+				AllowedOperands: []filter.NodeType{filter.ConditionType, filter.UnaryOperatorType},
 			},
 		},
 	}

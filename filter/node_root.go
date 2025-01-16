@@ -16,6 +16,6 @@ func (n *rootNode) GetType() NodeType {
 	return RootType
 }
 
-func (n *rootNode) parse(p *Parser, ndex int, runes []rune) error {
+func (n *rootNode) parse(p *Parser, ndex int, runes []rune, depth byte) error {
 	return nil
 }

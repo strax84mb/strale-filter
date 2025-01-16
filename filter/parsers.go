@@ -1,8 +1,8 @@
 package filter
 
-func Parse(text string) (Node, error) {
+func (p *Parser) Parse(text string) (Node, error) {
 	runes := []rune(text)
 	rn := &rootNode{}
-	err := rn.parse(nil, 0, runes)
+	err := rn.parse(p, 0, runes, 0)
 	return rn, err
 }

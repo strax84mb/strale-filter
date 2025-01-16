@@ -15,7 +15,7 @@ const (
 )
 
 type Node interface {
-	parse(p *Parser, index int, runes []rune) error
+	parse(p *Parser, index int, runes []rune, depth byte) error
 	GetType() NodeType
 	Next() Node
 }
@@ -25,6 +25,7 @@ type OperatorPlacement uint8
 const (
 	OnField OperatorPlacement = iota
 	OnCondition
+	OnUnaryOperator
 )
 
 type OperatorsDefinition struct {
