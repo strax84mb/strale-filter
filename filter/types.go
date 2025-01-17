@@ -15,7 +15,7 @@ const (
 )
 
 type Node interface {
-	parse(p *Parser, index int, runes []rune, depth byte) error
+	parse(p *Parser, index int, runes []rune, depth byte) (int, error)
 	GetType() NodeType
 	Next() Node
 }
