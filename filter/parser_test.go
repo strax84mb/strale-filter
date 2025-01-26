@@ -1,6 +1,11 @@
 package filter_test
 
-import "github.com/strax84mb/strale-filter/filter"
+import (
+	"testing"
+
+	"github.com/strax84mb/strale-filter/filter"
+	"github.com/stretchr/testify/assert"
+)
 
 func makeParser() *filter.Parser {
 	return &filter.Parser{
@@ -31,4 +36,11 @@ func makeParser() *filter.Parser {
 			},
 		},
 	}
+}
+
+func TestExists(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse("-exists(table.name)")
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
 }
