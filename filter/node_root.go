@@ -1,9 +1,5 @@
 package filter
 
-import (
-	"fmt"
-)
-
 var _ Node = &rootNode{}
 
 type rootNode struct {
@@ -20,37 +16,38 @@ func (n *rootNode) GetType() NodeType {
 	return RootType
 }
 
-func (n *rootNode) parse(p *Parser, index int, runes []rune, depth byte) (int, error) {
+func (n *rootNode) parse(p *Parser, index int, runes []rune, depth byte) (int, ErrorType) {
 	r := runes[index]
 	switch {
 	case r == '(':
-		// recognize condition
+		// TODO recognize condition
 		panic(`"(" is not supported yet`)
 	case r == '-':
 		return n.parseUnaryOperator(p, index+1, runes, depth)
 	case isFieldRune(r):
-		// recognize field
+		// TODO recognize field
+		panic(`"field" is not supported yet`)
 	default:
 	}
-	return 0, nil
+	return 0, NoError
 }
 
-func (n *rootNode) parseUnaryOperator(p *Parser, index int, runes []rune, depth byte) (int, error) {
+func (n *rootNode) parseUnaryOperator(p *Parser, index int, runes []rune, depth byte) (int, ErrorType) {
 	operatorName, nextCharIndex := parseToken(index, runes, isOperatorRune)
 	of, found := p.UnaryOperators[operatorName]
 	if !found {
-		return index, fmt.Errorf("first character error: %w", ErrUnknownOperator)
+		return index, ErrUnknownOperator
 	}
 	operator := UnaryOperator{
 		useOn: of.Placements,
 	}
-	var err error
+	var err ErrorType
 	nextCharIndex, err = operator.parse(p, nextCharIndex, runes, depth+1)
-	if err != nil {
+	if err != NoError {
 		return nextCharIndex, err
 	}
 	if nextCharIndex != len(runes) {
 		return nextCharIndex, ErrNotExhausted
 	}
-	return nextCharIndex, nil
+	return nextCharIndex, NoError
 }

@@ -15,7 +15,7 @@ const (
 )
 
 type Node interface {
-	parse(p *Parser, index int, runes []rune, depth byte) (int, error)
+	parse(p *Parser, index int, runes []rune, depth byte) (int, ErrorType)
 	GetType() NodeType
 	Next() Node
 }
@@ -54,4 +54,12 @@ type Parser struct {
 	UnaryOperators        map[string]OperatorsDefinition
 	BinaryOperators       map[string]OperatorsDefinition
 	ParametrizedOperators map[string]OperatorsDefinition
+}
+
+func AllowPlacement(allowedPlacements []OperatorPlacement, placement OperatorPlacement) bool {
+	return presentInODArray(allowedPlacements, placement)
+}
+
+func AllowOperand(allowedOperands []NodeType, operand NodeType) bool {
+	return presentInODArray(allowedOperands, operand)
 }

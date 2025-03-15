@@ -44,3 +44,7 @@ func TestExists(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, node)
 }
+
+func TestNotExists(t *testing.T) {}
+
+func TestNotCondition(t *testing.T) {}
