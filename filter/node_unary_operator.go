@@ -6,6 +6,7 @@ type UnaryOperator struct {
 }
 
 func (up *UnaryOperator) parse(p *Parser, index int, runes []rune, depth byte) (int, ErrorType) {
+	var token string
 	switch runes[index] {
 	case '(':
 		if AllowPlacement(up.useOn, OnCondition) {
@@ -16,8 +17,16 @@ func (up *UnaryOperator) parse(p *Parser, index int, runes []rune, depth byte) (
 		}
 	case '-':
 		if AllowPlacement(up.useOn, OnUnaryOperator) {
-			// TODO handle unary operator
-			panic(`"unary operator" not supported yet`)
+			token, index = parseToken(index+1, runes, isOperatorRune)
+			of, found := p.UnaryOperators[token]
+			if !found {
+				return index, ErrUnknownOperator
+			}
+			operator := &UnaryOperator{
+				useOn: of.Placements,
+			}
+			up.operand = operator
+			return operator.parse(p, index, runes, depth+1)
 		} else {
 			return index, ErrUnexpectedToken
 		}
@@ -34,5 +43,13 @@ func (up *UnaryOperator) parse(p *Parser, index int, runes []rune, depth byte) (
 	if index > len(runes) || runes[index] != ')' {
 		return index, ErrUnexpectedToken
 	}
-	return index, NoError
+	return index + 1, NoError
+}
+
+func (up *UnaryOperator) GetType() NodeType {
+	return UnaryOperatorType
+}
+
+func (up *UnaryOperator) Next() Node {
+	return up.operand
 }

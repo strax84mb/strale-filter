@@ -45,6 +45,65 @@ func TestExists(t *testing.T) {
 	assert.NotNil(t, node)
 }
 
-func TestNotExists(t *testing.T) {}
+func TestNotExists(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse("-not(-exists(table.name))")
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
 
-func TestNotCondition(t *testing.T) {}
+func TestFieldNumeral(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse("table.num -eq 12")
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestFieldTrue(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse("table.bool -eq true")
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestFieldFalse(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse("table.bool -eq false")
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestNotNakedCondition(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse(`-not(table.name -eq "qwerty")`)
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestNotCondition(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse(`-not((table.name -eq "qwerty"))`)
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestNotConditions(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse(`-not((table.name -eq "qwerty") -and (table.type -not(-eq("qwerty"))))`)
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestInConditions(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse(`table.name -in ["val_1", "val_2", "val_3"]`)
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}
+
+func TestMultiConditions(t *testing.T) {
+	parser := makeParser()
+	node, err := parser.Parse(`(table.name -eq "name") -and (table.type -eq "some type") -and (table.date -eq "2025-03-12") -or (table.num -eq 12)`)
+	assert.NoError(t, err)
+	assert.NotNil(t, node)
+}

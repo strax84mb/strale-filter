@@ -17,17 +17,25 @@ func (n *rootNode) GetType() NodeType {
 }
 
 func (n *rootNode) parse(p *Parser, index int, runes []rune, depth byte) (int, ErrorType) {
-	r := runes[index]
+	var (
+		err ErrorType
+		r   rune = runes[index]
+	)
 	switch {
 	case r == '(':
 		// TODO recognize condition
 		panic(`"(" is not supported yet`)
 	case r == '-':
-		return n.parseUnaryOperator(p, index+1, runes, depth)
+		index, err = n.parseUnaryOperator(p, index+1, runes, depth)
 	case isFieldRune(r):
 		// TODO recognize field
 		panic(`"field" is not supported yet`)
 	default:
+	}
+	if err != NoError {
+		return index, err
+	} else if index < len(runes) {
+		return index, ErrNotExhausted
 	}
 	return 0, NoError
 }
@@ -45,9 +53,6 @@ func (n *rootNode) parseUnaryOperator(p *Parser, index int, runes []rune, depth 
 	nextCharIndex, err = operator.parse(p, nextCharIndex, runes, depth+1)
 	if err != NoError {
 		return nextCharIndex, err
-	}
-	if nextCharIndex != len(runes) {
-		return nextCharIndex, ErrNotExhausted
 	}
 	return nextCharIndex, NoError
 }

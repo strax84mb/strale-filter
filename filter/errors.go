@@ -2,14 +2,14 @@ package filter
 
 import "fmt"
 
-type ErrorType string
+type ErrorType byte
 
 const (
-	NoError            ErrorType = "no error"
-	ErrUnexpectedToken ErrorType = "unexpected token encountered"
-	ErrMalformedName   ErrorType = "character not allowed in name"
-	ErrUnknownOperator ErrorType = "unknown operator"
-	ErrNotExhausted    ErrorType = "not all characted processed"
+	NoError ErrorType = iota
+	ErrUnexpectedToken
+	ErrMalformedName
+	ErrUnknownOperator
+	ErrNotExhausted
 )
 
 type ErrParse struct {
@@ -31,5 +31,18 @@ func newParseError(errType ErrorType, runes []rune, index int) *ErrParse {
 }
 
 func (ep *ErrParse) Error() string {
-	return fmt.Sprintf("%s, unprocessed text: %s", string(ep.errType), ep.text)
+	var errText string
+	switch ep.errType {
+	case ErrUnexpectedToken:
+		errText = "unexpected token encountered"
+	case ErrMalformedName:
+		errText = "character not allowed in name"
+	case ErrUnknownOperator:
+		errText = "unknown operator"
+	case ErrNotExhausted:
+		errText = "not all characted processed"
+	default:
+		errText = "no error"
+	}
+	return fmt.Sprintf("%s, unprocessed text: %s", errText, ep.text)
 }
